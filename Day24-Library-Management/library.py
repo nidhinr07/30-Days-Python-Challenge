@@ -1,6 +1,5 @@
 books = []
 
-
 def load_books():
 
     try:
@@ -9,7 +8,10 @@ def load_books():
 
             for line in file:
 
-                books.append(line.strip())
+                book = line.strip()
+
+                if book:
+                    books.append(book)
 
     except FileNotFoundError:
 
@@ -18,7 +20,13 @@ def load_books():
 
 def add_book():
 
-    book = input("Enter book name: ")
+    book = input("Enter book name: ").strip()
+
+    if not book:
+
+        print("Book name cannot be empty.")
+
+        return
 
     books.append(book)
 
@@ -39,50 +47,50 @@ def view_books():
 
     print("\n----- Available Books -----")
 
-    for book in books:
+    for index, book in enumerate(books, start=1):
 
-        print(book)
+        print(f"{index}. {book}")
 
 
 def search_book():
 
-    book = input("Enter book name to search: ")
+    book = input("Enter book name to search: ").strip()
 
-    if book in books:
+    for item in books:
 
-        print("Book is available.")
+        if item.lower() == book.lower():
 
-    else:
+            print("Book is available.")
 
-        print("Book not found.")
+            return
+
+    print("Book not found.")
 
 
 def remove_book():
 
-    book = input("Enter book name to remove: ")
+    book = input("Enter book name to remove: ").strip()
 
-    if book in books:
+    for item in books:
 
-        books.remove(book)
+        if item.lower() == book.lower():
 
-        with open("books.txt", "w") as file:
+            books.remove(item)
 
-            for item in books:
+            with open("books.txt", "w") as file:
 
-                file.write(item + "\n")
+                for saved_book in books:
 
-        print("Book removed successfully.")
+                    file.write(saved_book + "\n")
 
-    else:
+            print("Book removed successfully.")
 
-        print("Book not found.")
+            return
 
-
-# Load saved books when program starts
-load_books()
+    print("Book not found.")
 
 
-while True:
+def show_menu():
 
     print("\n===== Library Management System =====")
 
@@ -92,30 +100,44 @@ while True:
     print("4. Remove Book")
     print("5. Exit")
 
-    choice = input("Enter your choice: ")
 
-    if choice == "1":
+load_books()
 
-        add_book()
 
-    elif choice == "2":
+while True:
 
-        view_books()
+    show_menu()
 
-    elif choice == "3":
+    try:
 
-        search_book()
+        choice = int(input("Enter your choice: "))
 
-    elif choice == "4":
+        if choice == 1:
 
-        remove_book()
+            add_book()
 
-    elif choice == "5":
+        elif choice == 2:
 
-        print("Thank you for using the library.")
+            view_books()
 
-        break
+        elif choice == 3:
 
-    else:
+            search_book()
 
-        print("Invalid choice.")
+        elif choice == 4:
+
+            remove_book()
+
+        elif choice == 5:
+
+            print("Thank you for using the library.")
+
+            break
+
+        else:
+
+            print("Please choose a number between 1 and 5.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
