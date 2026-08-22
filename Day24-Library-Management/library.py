@@ -1,8 +1,19 @@
-# Day 24 - Library Management System
-# Commit 2 - Search and Remove Books
-
-
 books = []
+
+
+def load_books():
+
+    try:
+
+        with open("books.txt", "r") as file:
+
+            for line in file:
+
+                books.append(line.strip())
+
+    except FileNotFoundError:
+
+        pass
 
 
 def add_book():
@@ -10,6 +21,10 @@ def add_book():
     book = input("Enter book name: ")
 
     books.append(book)
+
+    with open("books.txt", "a") as file:
+
+        file.write(book + "\n")
 
     print("Book added successfully.")
 
@@ -50,11 +65,21 @@ def remove_book():
 
         books.remove(book)
 
+        with open("books.txt", "w") as file:
+
+            for item in books:
+
+                file.write(item + "\n")
+
         print("Book removed successfully.")
 
     else:
 
         print("Book not found.")
+
+
+# Load saved books when program starts
+load_books()
 
 
 while True:
