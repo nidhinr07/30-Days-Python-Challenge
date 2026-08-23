@@ -1,7 +1,3 @@
-# Day 25 - To-Do List Manager
-# Commit 3 - File Handling
-
-
 tasks = []
 
 
@@ -13,12 +9,23 @@ def load_tasks():
 
             for line in file:
 
-                task, status = line.strip().split("|")
+                line = line.strip()
 
-                tasks.append({
-                    "task": task,
-                    "completed": status == "True"
-                })
+                if not line:
+                    continue
+
+                try:
+
+                    task, status = line.split("|")
+
+                    tasks.append({
+                        "task": task,
+                        "completed": status == "True"
+                    })
+
+                except ValueError:
+
+                    continue
 
     except FileNotFoundError:
 
@@ -27,13 +34,19 @@ def load_tasks():
 
 def save_tasks():
 
-    with open("tasks.txt", "w") as file:
+    try:
 
-        for item in tasks:
+        with open("tasks.txt", "w") as file:
 
-            file.write(
-                f"{item['task']}|{item['completed']}\n"
-            )
+            for item in tasks:
+
+                file.write(
+                    f"{item['task']}|{item['completed']}\n"
+                )
+
+    except OSError:
+
+        print("Unable to save tasks.")
 
 
 def add_task():
@@ -45,6 +58,14 @@ def add_task():
         print("Task cannot be empty.")
 
         return
+
+    for item in tasks:
+
+        if item["task"].lower() == task.lower():
+
+            print("Task already exists.")
+
+            return
 
     tasks.append({
         "task": task,
@@ -86,11 +107,17 @@ def complete_task():
 
         if 1 <= number <= len(tasks):
 
-            tasks[number - 1]["completed"] = True
+            if tasks[number - 1]["completed"]:
 
-            save_tasks()
+                print("Task is already completed.")
 
-            print("Task marked as completed.")
+            else:
+
+                tasks[number - 1]["completed"] = True
+
+                save_tasks()
+
+                print("Task marked as completed.")
 
         else:
 
@@ -129,11 +156,7 @@ def delete_task():
         print("Please enter a valid number.")
 
 
-# Load saved tasks when program starts
-load_tasks()
-
-
-while True:
+def show_menu():
 
     print("\n===== To-Do List Manager =====")
 
@@ -143,30 +166,44 @@ while True:
     print("4. Delete Task")
     print("5. Exit")
 
-    choice = input("Enter your choice: ")
 
-    if choice == "1":
+load_tasks()
 
-        add_task()
 
-    elif choice == "2":
+while True:
 
-        view_tasks()
+    show_menu()
 
-    elif choice == "3":
+    try:
 
-        complete_task()
+        choice = int(input("Enter your choice: "))
 
-    elif choice == "4":
+        if choice == 1:
 
-        delete_task()
+            add_task()
 
-    elif choice == "5":
+        elif choice == 2:
 
-        print("Thank you for using the To-Do List.")
+            view_tasks()
 
-        break
+        elif choice == 3:
 
-    else:
+            complete_task()
 
-        print("Invalid choice.")
+        elif choice == 4:
+
+            delete_task()
+
+        elif choice == 5:
+
+            print("Thank you for using the To-Do List.")
+
+            break
+
+        else:
+
+            print("Please choose a number between 1 and 5.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
