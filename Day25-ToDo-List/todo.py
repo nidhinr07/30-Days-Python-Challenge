@@ -1,18 +1,57 @@
 # Day 25 - To-Do List Manager
-# Commit 2 - Complete and Delete Tasks
+# Commit 3 - File Handling
 
 
 tasks = []
+
+
+def load_tasks():
+
+    try:
+
+        with open("tasks.txt", "r") as file:
+
+            for line in file:
+
+                task, status = line.strip().split("|")
+
+                tasks.append({
+                    "task": task,
+                    "completed": status == "True"
+                })
+
+    except FileNotFoundError:
+
+        pass
+
+
+def save_tasks():
+
+    with open("tasks.txt", "w") as file:
+
+        for item in tasks:
+
+            file.write(
+                f"{item['task']}|{item['completed']}\n"
+            )
 
 
 def add_task():
 
     task = input("Enter task: ").strip()
 
+    if not task:
+
+        print("Task cannot be empty.")
+
+        return
+
     tasks.append({
         "task": task,
         "completed": False
     })
+
+    save_tasks()
 
     print("Task added successfully.")
 
@@ -49,6 +88,8 @@ def complete_task():
 
             tasks[number - 1]["completed"] = True
 
+            save_tasks()
+
             print("Task marked as completed.")
 
         else:
@@ -75,6 +116,8 @@ def delete_task():
 
             removed_task = tasks.pop(number - 1)
 
+            save_tasks()
+
             print(f"Deleted: {removed_task['task']}")
 
         else:
@@ -84,6 +127,10 @@ def delete_task():
     except ValueError:
 
         print("Please enter a valid number.")
+
+
+# Load saved tasks when program starts
+load_tasks()
 
 
 while True:
