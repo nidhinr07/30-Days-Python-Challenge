@@ -1,8 +1,34 @@
 # Day 26 - Student Management System
-# Commit 2 - Search, Update and Delete
+# Commit 3 - File Handling
 
 
 students = {}
+
+
+def load_students():
+
+    try:
+
+        with open("students.txt", "r") as file:
+
+            for line in file:
+
+                name, age = line.strip().split("|")
+
+                students[name] = age
+
+    except FileNotFoundError:
+
+        pass
+
+
+def save_students():
+
+    with open("students.txt", "w") as file:
+
+        for name, age in students.items():
+
+            file.write(f"{name}|{age}\n")
 
 
 def add_student():
@@ -11,6 +37,8 @@ def add_student():
     age = input("Enter student age: ").strip()
 
     students[name] = age
+
+    save_students()
 
     print("Student added successfully.")
 
@@ -53,6 +81,8 @@ def update_student():
 
         students[name] = new_age
 
+        save_students()
+
         print("Student updated successfully.")
 
     else:
@@ -68,11 +98,17 @@ def delete_student():
 
         del students[name]
 
+        save_students()
+
         print("Student deleted successfully.")
 
     else:
 
         print("Student not found.")
+
+
+# Load saved students when program starts
+load_students()
 
 
 while True:
