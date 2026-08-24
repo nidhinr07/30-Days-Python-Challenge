@@ -1,7 +1,3 @@
-# Day 26 - Student Management System
-# Commit 3 - File Handling
-
-
 students = {}
 
 
@@ -13,9 +9,20 @@ def load_students():
 
             for line in file:
 
-                name, age = line.strip().split("|")
+                line = line.strip()
 
-                students[name] = age
+                if not line:
+                    continue
+
+                try:
+
+                    name, age = line.split("|")
+
+                    students[name] = int(age)
+
+                except ValueError:
+
+                    continue
 
     except FileNotFoundError:
 
@@ -24,23 +31,56 @@ def load_students():
 
 def save_students():
 
-    with open("students.txt", "w") as file:
+    try:
 
-        for name, age in students.items():
+        with open("students.txt", "w") as file:
 
-            file.write(f"{name}|{age}\n")
+            for name, age in students.items():
+
+                file.write(f"{name}|{age}\n")
+
+    except OSError:
+
+        print("Unable to save student data.")
 
 
 def add_student():
 
     name = input("Enter student name: ").strip()
-    age = input("Enter student age: ").strip()
 
-    students[name] = age
+    if not name:
 
-    save_students()
+        print("Student name cannot be empty.")
 
-    print("Student added successfully.")
+        return
+
+    for student in students:
+
+        if student.lower() == name.lower():
+
+            print("Student already exists.")
+
+            return
+
+    try:
+
+        age = int(input("Enter student age: "))
+
+        if age <= 0:
+
+            print("Age must be greater than zero.")
+
+            return
+
+        students[name] = age
+
+        save_students()
+
+        print("Student added successfully.")
+
+    except ValueError:
+
+        print("Please enter a valid age.")
 
 
 def view_students():
@@ -58,13 +98,26 @@ def view_students():
         print(f"{number}. {name} - Age: {age}")
 
 
+def find_student(name):
+
+    for student in students:
+
+        if student.lower() == name.lower():
+
+            return student
+
+    return None
+
+
 def search_student():
 
     name = input("Enter student name to search: ").strip()
 
-    if name in students:
+    student = find_student(name)
 
-        print(f"Student found: {name} - Age: {students[name]}")
+    if student:
+
+        print(f"Student found: {student} - Age: {students[student]}")
 
     else:
 
@@ -75,28 +128,44 @@ def update_student():
 
     name = input("Enter student name to update: ").strip()
 
-    if name in students:
+    student = find_student(name)
 
-        new_age = input("Enter new age: ").strip()
+    if not student:
 
-        students[name] = new_age
+        print("Student not found.")
+
+        return
+
+    try:
+
+        new_age = int(input("Enter new age: "))
+
+        if new_age <= 0:
+
+            print("Age must be greater than zero.")
+
+            return
+
+        students[student] = new_age
 
         save_students()
 
         print("Student updated successfully.")
 
-    else:
+    except ValueError:
 
-        print("Student not found.")
+        print("Please enter a valid age.")
 
 
 def delete_student():
 
     name = input("Enter student name to delete: ").strip()
 
-    if name in students:
+    student = find_student(name)
 
-        del students[name]
+    if student:
+
+        del students[student]
 
         save_students()
 
@@ -107,11 +176,7 @@ def delete_student():
         print("Student not found.")
 
 
-# Load saved students when program starts
-load_students()
-
-
-while True:
+def show_menu():
 
     print("\n===== Student Management System =====")
 
@@ -122,34 +187,48 @@ while True:
     print("5. Delete Student")
     print("6. Exit")
 
-    choice = input("Enter your choice: ")
 
-    if choice == "1":
+load_students()
 
-        add_student()
 
-    elif choice == "2":
+while True:
 
-        view_students()
+    show_menu()
 
-    elif choice == "3":
+    try:
 
-        search_student()
+        choice = int(input("Enter your choice: "))
 
-    elif choice == "4":
+        if choice == 1:
 
-        update_student()
+            add_student()
 
-    elif choice == "5":
+        elif choice == 2:
 
-        delete_student()
+            view_students()
 
-    elif choice == "6":
+        elif choice == 3:
 
-        print("Thank you for using the Student Management System.")
+            search_student()
 
-        break
+        elif choice == 4:
 
-    else:
+            update_student()
 
-        print("Invalid choice.")
+        elif choice == 5:
+
+            delete_student()
+
+        elif choice == 6:
+
+            print("Thank you for using the Student Management System.")
+
+            break
+
+        else:
+
+            print("Please choose a number between 1 and 6.")
+
+    except ValueError:
+
+        print("Please enter a valid number.")
