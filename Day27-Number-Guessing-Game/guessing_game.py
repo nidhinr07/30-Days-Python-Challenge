@@ -1,63 +1,74 @@
-# Day 27 - Number Guessing Game
-# Commit 3 - Score System and Difficulty Levels
-
-
 import random
-
 
 def choose_difficulty():
 
     print("\n===== Choose Difficulty =====")
 
-    print("1. Easy")
-    print("2. Medium")
-    print("3. Hard")
+    print("1. Easy   - 10 attempts")
+    print("2. Medium - 7 attempts")
+    print("3. Hard   - 5 attempts")
 
-    choice = input("Enter your choice: ")
+    while True:
 
-    if choice == "1":
+        try:
 
-        return 10, 10
+            choice = int(input("Enter your choice: "))
 
-    elif choice == "2":
+            if choice == 1:
 
-        return 7, 20
+                return 10, 10
 
-    elif choice == "3":
+            elif choice == 2:
 
-        return 5, 30
+                return 7, 20
 
-    else:
+            elif choice == 3:
 
-        print("Invalid choice. Medium difficulty selected.")
+                return 5, 30
 
-        return 7, 20
+            else:
+
+                print("Please choose 1, 2, or 3.")
+
+        except ValueError:
+
+            print("Please enter a valid number.")
 
 
 def play_game():
 
-    attempts, points = choose_difficulty()
+    attempts, starting_score = choose_difficulty()
 
     number = random.randint(1, 100)
 
+    score = starting_score
+
     print("\n===== Number Guessing Game =====")
-
     print("I have selected a number between 1 and 100.")
-
     print(f"You have {attempts} attempts.")
-
-    score = points
 
     while attempts > 0:
 
-        guess = int(input("\nEnter your guess: "))
+        try:
+
+            guess = int(input("\nEnter your guess: "))
+
+        except ValueError:
+
+            print("Please enter a valid number.")
+
+            continue
+
+        if guess < 1 or guess > 100:
+
+            print("Please enter a number between 1 and 100.")
+
+            continue
 
         if guess == number:
 
             print("\n🎉 Congratulations!")
-
             print("You guessed the correct number.")
-
             print(f"Your score: {score}")
 
             return
@@ -71,18 +82,42 @@ def play_game():
             print("Too high! Try a lower number.")
 
         attempts -= 1
-
-        score -= 2
+        score = max(0, score - 2)
 
         if attempts > 0:
 
             print(f"Attempts remaining: {attempts}")
 
-        else:
-
-            print("\nGame Over!")
-
-            print(f"The correct number was {number}.")
+    print("\nGame Over!")
+    print(f"The correct number was {number}.")
+    print(f"Your final score: {score}")
 
 
-play_game()
+def main():
+
+    print("🎮 Welcome to the Number Guessing Game!")
+
+    while True:
+
+        play_game()
+
+        while True:
+
+            again = input("\nDo you want to play again? (y/n): ").lower()
+
+            if again == "y":
+
+                break
+
+            elif again == "n":
+
+                print("Thanks for playing! 👋")
+
+                return
+
+            else:
+
+                print("Please enter y or n.")
+
+
+main()
