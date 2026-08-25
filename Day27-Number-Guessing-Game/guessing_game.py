@@ -1,46 +1,88 @@
 # Day 27 - Number Guessing Game
-# Commit 2 - Limited Attempts and Hints
+# Commit 3 - Score System and Difficulty Levels
 
 
 import random
 
 
-number = random.randint(1, 100)
+def choose_difficulty():
 
-attempts = 7
+    print("\n===== Choose Difficulty =====")
 
+    print("1. Easy")
+    print("2. Medium")
+    print("3. Hard")
 
-print("===== Number Guessing Game =====")
-print("I have selected a number between 1 and 100.")
-print(f"You have {attempts} attempts to guess it.")
+    choice = input("Enter your choice: ")
 
+    if choice == "1":
 
-while attempts > 0:
+        return 10, 10
 
-    guess = int(input("Enter your guess: "))
+    elif choice == "2":
 
-    if guess == number:
+        return 7, 20
 
-        print("🎉 Congratulations!")
-        print("You guessed the correct number.")
+    elif choice == "3":
 
-        break
-
-    elif guess < number:
-
-        print("Too low! Try a higher number.")
+        return 5, 30
 
     else:
 
-        print("Too high! Try a lower number.")
+        print("Invalid choice. Medium difficulty selected.")
 
-    attempts -= 1
+        return 7, 20
 
-    if attempts > 0:
 
-        print(f"Attempts remaining: {attempts}")
+def play_game():
 
-    else:
+    attempts, points = choose_difficulty()
 
-        print("\nGame Over!")
-        print(f"The correct number was {number}.")
+    number = random.randint(1, 100)
+
+    print("\n===== Number Guessing Game =====")
+
+    print("I have selected a number between 1 and 100.")
+
+    print(f"You have {attempts} attempts.")
+
+    score = points
+
+    while attempts > 0:
+
+        guess = int(input("\nEnter your guess: "))
+
+        if guess == number:
+
+            print("\n🎉 Congratulations!")
+
+            print("You guessed the correct number.")
+
+            print(f"Your score: {score}")
+
+            return
+
+        elif guess < number:
+
+            print("Too low! Try a higher number.")
+
+        else:
+
+            print("Too high! Try a lower number.")
+
+        attempts -= 1
+
+        score -= 2
+
+        if attempts > 0:
+
+            print(f"Attempts remaining: {attempts}")
+
+        else:
+
+            print("\nGame Over!")
+
+            print(f"The correct number was {number}.")
+
+
+play_game()
