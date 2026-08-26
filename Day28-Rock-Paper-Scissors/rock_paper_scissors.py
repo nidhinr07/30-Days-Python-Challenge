@@ -1,5 +1,5 @@
 # Day 28 - Rock Paper Scissors
-# Commit 2 - Score System
+# Commit 3 - Multiple Rounds and Statistics
 
 
 import random
@@ -10,12 +10,15 @@ choices = ["rock", "paper", "scissors"]
 player_score = 0
 computer_score = 0
 draws = 0
+total_rounds = 0
 
 
 while True:
 
+    print("\n===== Rock Paper Scissors =====")
+
     player_choice = input(
-        "\nChoose rock, paper, scissors or quit: "
+        "Choose rock, paper, scissors or quit: "
     ).lower()
 
     if player_choice == "quit":
@@ -28,6 +31,8 @@ while True:
         continue
 
     computer_choice = random.choice(choices)
+
+    total_rounds += 1
 
     print("\nYou chose:", player_choice)
     print("Computer chose:", computer_choice)
@@ -59,15 +64,27 @@ while True:
 
         computer_score += 1
 
-    print("\n----- Score -----")
+    print("\n----- Current Statistics -----")
 
-    print("Your score:", player_score)
-    print("Computer score:", computer_score)
+    print("Rounds:", total_rounds)
+    print("Your wins:", player_score)
+    print("Computer wins:", computer_score)
     print("Draws:", draws)
 
 
-print("\n===== Final Score =====")
+print("\n===== Final Statistics =====")
 
-print("Your score:", player_score)
-print("Computer score:", computer_score)
+print("Total rounds:", total_rounds)
+print("Your wins:", player_score)
+print("Computer wins:", computer_score)
 print("Draws:", draws)
+
+if total_rounds > 0:
+
+    win_percentage = (player_score / total_rounds) * 100
+
+    print(f"Your win percentage: {win_percentage:.2f}%")
+
+else:
+
+    print("No rounds played.")
