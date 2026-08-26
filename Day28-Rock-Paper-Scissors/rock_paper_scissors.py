@@ -1,49 +1,30 @@
-# Day 28 - Rock Paper Scissors
-# Commit 3 - Multiple Rounds and Statistics
-
-
 import random
-
 
 choices = ["rock", "paper", "scissors"]
 
-player_score = 0
-computer_score = 0
-draws = 0
-total_rounds = 0
+
+def get_player_choice():
+
+    while True:
+
+        choice = input(
+            "\nChoose rock, paper, scissors or quit: "
+        ).lower().strip()
+
+        if choice in choices or choice == "quit":
+
+            return choice
+
+        print("Invalid choice. Please try again.")
 
 
-while True:
-
-    print("\n===== Rock Paper Scissors =====")
-
-    player_choice = input(
-        "Choose rock, paper, scissors or quit: "
-    ).lower()
-
-    if player_choice == "quit":
-        break
-
-    if player_choice not in choices:
-
-        print("Invalid choice. Try again.")
-
-        continue
-
-    computer_choice = random.choice(choices)
-
-    total_rounds += 1
-
-    print("\nYou chose:", player_choice)
-    print("Computer chose:", computer_choice)
+def get_result(player_choice, computer_choice):
 
     if player_choice == computer_choice:
 
-        print("It's a draw!")
+        return "draw"
 
-        draws += 1
-
-    elif (
+    if (
         player_choice == "rock"
         and computer_choice == "scissors"
     ) or (
@@ -54,37 +35,114 @@ while True:
         and computer_choice == "paper"
     ):
 
-        print("You win! 🎉")
+        return "player"
 
-        player_score += 1
+    return "computer"
 
-    else:
 
-        print("Computer wins!")
+def play_game():
 
-        computer_score += 1
+    player_score = 0
+    computer_score = 0
+    draws = 0
+    total_rounds = 0
 
-    print("\n----- Current Statistics -----")
+    print("\n===== Rock Paper Scissors =====")
 
-    print("Rounds:", total_rounds)
+    while True:
+
+        player_choice = get_player_choice()
+
+        if player_choice == "quit":
+
+            break
+
+        computer_choice = random.choice(choices)
+
+        total_rounds += 1
+
+        print("\nYou chose:", player_choice)
+        print("Computer chose:", computer_choice)
+
+        result = get_result(
+            player_choice,
+            computer_choice
+        )
+
+        if result == "draw":
+
+            print("It's a draw!")
+
+            draws += 1
+
+        elif result == "player":
+
+            print("You win! 🎉")
+
+            player_score += 1
+
+        else:
+
+            print("Computer wins!")
+
+            computer_score += 1
+
+        print("\n----- Score -----")
+
+        print("Your wins:", player_score)
+        print("Computer wins:", computer_score)
+        print("Draws:", draws)
+
+    print("\n===== Final Statistics =====")
+
+    print("Total rounds:", total_rounds)
     print("Your wins:", player_score)
     print("Computer wins:", computer_score)
     print("Draws:", draws)
 
+    if total_rounds > 0:
 
-print("\n===== Final Statistics =====")
+        win_percentage = (
+            player_score / total_rounds
+        ) * 100
 
-print("Total rounds:", total_rounds)
-print("Your wins:", player_score)
-print("Computer wins:", computer_score)
-print("Draws:", draws)
+        print(
+            f"Your win percentage: "
+            f"{win_percentage:.2f}%"
+        )
 
-if total_rounds > 0:
+    else:
 
-    win_percentage = (player_score / total_rounds) * 100
+        print("No rounds played.")
 
-    print(f"Your win percentage: {win_percentage:.2f}%")
 
-else:
+def main():
 
-    print("No rounds played.")
+    print("🎮 Welcome to Rock Paper Scissors!")
+
+    while True:
+
+        play_game()
+
+        while True:
+
+            replay = input(
+                "\nDo you want to play again? (y/n): "
+            ).lower().strip()
+
+            if replay == "y":
+
+                break
+
+            elif replay == "n":
+
+                print("Thanks for playing! 👋")
+
+                return
+
+            else:
+
+                print("Please enter y or n.")
+
+
+main()
