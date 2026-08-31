@@ -1,9 +1,4 @@
-# Day 29 - Expense Tracker
-# Commit 3 - File Handling
-
-
 expenses = []
-
 
 def load_expenses():
 
@@ -13,12 +8,23 @@ def load_expenses():
 
             for line in file:
 
-                name, amount = line.strip().split("|")
+                line = line.strip()
 
-                expenses.append({
-                    "name": name,
-                    "amount": float(amount)
-                })
+                if not line:
+                    continue
+
+                try:
+
+                    name, amount = line.split("|")
+
+                    expenses.append({
+                        "name": name,
+                        "amount": float(amount)
+                    })
+
+                except ValueError:
+
+                    continue
 
     except FileNotFoundError:
 
@@ -27,22 +33,51 @@ def load_expenses():
 
 def save_expenses():
 
-    with open("expenses.txt", "w") as file:
+    try:
 
-        for expense in expenses:
+        with open("expenses.txt", "w") as file:
 
-            file.write(
-                f"{expense['name']}|{expense['amount']}\n"
-            )
+            for expense in expenses:
+
+                file.write(
+                    f"{expense['name']}|"
+                    f"{expense['amount']}\n"
+                )
+
+    except OSError:
+
+        print("Unable to save expense data.")
 
 
 def add_expense():
 
-    name = input("Enter expense name: ").strip()
+    name = input(
+        "Enter expense name: "
+    ).strip()
 
-    amount = float(
-        input("Enter expense amount: ")
-    )
+    if not name:
+
+        print("Expense name cannot be empty.")
+
+        return
+
+    try:
+
+        amount = float(
+            input("Enter expense amount: ")
+        )
+
+        if amount <= 0:
+
+            print("Amount must be greater than zero.")
+
+            return
+
+    except ValueError:
+
+        print("Please enter a valid amount.")
+
+        return
 
     expense = {
         "name": name,
@@ -107,6 +142,7 @@ def delete_expense():
     view_expenses()
 
     if not expenses:
+
         return
 
     try:
@@ -150,10 +186,7 @@ def calculate_total():
     )
 
 
-load_expenses()
-
-
-while True:
+def show_menu():
 
     print("\n===== Expense Tracker =====")
 
@@ -164,38 +197,54 @@ while True:
     print("5. Calculate Total")
     print("6. Exit")
 
-    choice = input(
-        "Enter your choice: "
-    )
 
-    if choice == "1":
+load_expenses()
 
-        add_expense()
 
-    elif choice == "2":
+while True:
 
-        view_expenses()
+    show_menu()
 
-    elif choice == "3":
+    try:
 
-        search_expense()
-
-    elif choice == "4":
-
-        delete_expense()
-
-    elif choice == "5":
-
-        calculate_total()
-
-    elif choice == "6":
-
-        print(
-            "Thank you for using the Expense Tracker."
+        choice = int(
+            input("Enter your choice: ")
         )
 
-        break
+        if choice == 1:
 
-    else:
+            add_expense()
 
-        print("Invalid choice.")
+        elif choice == 2:
+
+            view_expenses()
+
+        elif choice == 3:
+
+            search_expense()
+
+        elif choice == 4:
+
+            delete_expense()
+
+        elif choice == 5:
+
+            calculate_total()
+
+        elif choice == 6:
+
+            print(
+                "Thank you for using the Expense Tracker."
+            )
+
+            break
+
+        else:
+
+            print(
+                "Please choose a number between 1 and 6."
+            )
+
+    except ValueError:
+
+        print("Please enter a valid number.")
