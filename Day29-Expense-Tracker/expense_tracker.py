@@ -1,14 +1,48 @@
 # Day 29 - Expense Tracker
-# Commit 2 - Search, Delete and Calculate Total
+# Commit 3 - File Handling
 
 
 expenses = []
 
 
+def load_expenses():
+
+    try:
+
+        with open("expenses.txt", "r") as file:
+
+            for line in file:
+
+                name, amount = line.strip().split("|")
+
+                expenses.append({
+                    "name": name,
+                    "amount": float(amount)
+                })
+
+    except FileNotFoundError:
+
+        pass
+
+
+def save_expenses():
+
+    with open("expenses.txt", "w") as file:
+
+        for expense in expenses:
+
+            file.write(
+                f"{expense['name']}|{expense['amount']}\n"
+            )
+
+
 def add_expense():
 
     name = input("Enter expense name: ").strip()
-    amount = float(input("Enter expense amount: "))
+
+    amount = float(
+        input("Enter expense amount: ")
+    )
 
     expense = {
         "name": name,
@@ -16,6 +50,8 @@ def add_expense():
     }
 
     expenses.append(expense)
+
+    save_expenses()
 
     print("Expense added successfully.")
 
@@ -30,17 +66,23 @@ def view_expenses():
 
     print("\n----- Expenses -----")
 
-    for number, expense in enumerate(expenses, start=1):
+    for number, expense in enumerate(
+        expenses,
+        start=1
+    ):
 
         print(
             f"{number}. "
-            f"{expense['name']} - ₹{expense['amount']:.2f}"
+            f"{expense['name']} - "
+            f"₹{expense['amount']:.2f}"
         )
 
 
 def search_expense():
 
-    name = input("Enter expense name to search: ").strip()
+    name = input(
+        "Enter expense name to search: "
+    ).strip()
 
     found = False
 
@@ -49,8 +91,8 @@ def search_expense():
         if expense["name"].lower() == name.lower():
 
             print(
-                f"Found: {expense['name']} "
-                f"- ₹{expense['amount']:.2f}"
+                f"Found: {expense['name']} - "
+                f"₹{expense['amount']:.2f}"
             )
 
             found = True
@@ -70,16 +112,20 @@ def delete_expense():
     try:
 
         number = int(
-            input("Enter expense number to delete: ")
+            input(
+                "Enter expense number to delete: "
+            )
         )
 
         if 1 <= number <= len(expenses):
 
             removed = expenses.pop(number - 1)
 
+            save_expenses()
+
             print(
-                f"Deleted: {removed['name']} "
-                f"- ₹{removed['amount']:.2f}"
+                f"Deleted: {removed['name']} - "
+                f"₹{removed['amount']:.2f}"
             )
 
         else:
@@ -99,7 +145,12 @@ def calculate_total():
 
         total += expense["amount"]
 
-    print(f"\nTotal expenses: ₹{total:.2f}")
+    print(
+        f"\nTotal expenses: ₹{total:.2f}"
+    )
+
+
+load_expenses()
 
 
 while True:
@@ -113,7 +164,9 @@ while True:
     print("5. Calculate Total")
     print("6. Exit")
 
-    choice = input("Enter your choice: ")
+    choice = input(
+        "Enter your choice: "
+    )
 
     if choice == "1":
 
@@ -137,7 +190,9 @@ while True:
 
     elif choice == "6":
 
-        print("Thank you for using the Expense Tracker.")
+        print(
+            "Thank you for using the Expense Tracker."
+        )
 
         break
 
