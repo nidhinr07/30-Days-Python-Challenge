@@ -1,9 +1,4 @@
-# Day 30 - Personal Finance Manager
-# Commit 3 - File Handling
-
-
 records = []
-
 
 def load_records():
 
@@ -18,13 +13,19 @@ def load_records():
                 if not line:
                     continue
 
-                record_type, name, amount = line.split("|")
+                try:
 
-                records.append({
-                    "type": record_type,
-                    "name": name,
-                    "amount": float(amount)
-                })
+                    record_type, name, amount = line.split("|")
+
+                    records.append({
+                        "type": record_type,
+                        "name": name,
+                        "amount": float(amount)
+                    })
+
+                except ValueError:
+
+                    continue
 
     except FileNotFoundError:
 
@@ -33,21 +34,52 @@ def load_records():
 
 def save_records():
 
-    with open("finance_records.txt", "w") as file:
+    try:
 
-        for record in records:
+        with open("finance_records.txt", "w") as file:
 
-            file.write(
-                f"{record['type']}|"
-                f"{record['name']}|"
-                f"{record['amount']}\n"
-            )
+            for record in records:
+
+                file.write(
+                    f"{record['type']}|"
+                    f"{record['name']}|"
+                    f"{record['amount']}\n"
+                )
+
+    except OSError:
+
+        print("Unable to save financial records.")
 
 
 def add_income():
 
-    name = input("Enter income source: ").strip()
-    amount = float(input("Enter income amount: "))
+    name = input(
+        "Enter income source: "
+    ).strip()
+
+    if not name:
+
+        print("Income source cannot be empty.")
+
+        return
+
+    try:
+
+        amount = float(
+            input("Enter income amount: ")
+        )
+
+        if amount <= 0:
+
+            print("Amount must be greater than zero.")
+
+            return
+
+    except ValueError:
+
+        print("Please enter a valid amount.")
+
+        return
 
     record = {
         "type": "Income",
@@ -64,8 +96,33 @@ def add_income():
 
 def add_expense():
 
-    name = input("Enter expense name: ").strip()
-    amount = float(input("Enter expense amount: "))
+    name = input(
+        "Enter expense name: "
+    ).strip()
+
+    if not name:
+
+        print("Expense name cannot be empty.")
+
+        return
+
+    try:
+
+        amount = float(
+            input("Enter expense amount: ")
+        )
+
+        if amount <= 0:
+
+            print("Amount must be greater than zero.")
+
+            return
+
+    except ValueError:
+
+        print("Please enter a valid amount.")
+
+        return
 
     record = {
         "type": "Expense",
@@ -90,7 +147,10 @@ def view_records():
 
     print("\n----- Financial Records -----")
 
-    for number, record in enumerate(records, start=1):
+    for number, record in enumerate(
+        records,
+        start=1
+    ):
 
         print(
             f"{number}. "
@@ -102,7 +162,9 @@ def view_records():
 
 def search_record():
 
-    name = input("Enter record name to search: ").strip()
+    name = input(
+        "Enter record name to search: "
+    ).strip()
 
     found = False
 
@@ -128,12 +190,15 @@ def delete_record():
     view_records()
 
     if not records:
+
         return
 
     try:
 
         number = int(
-            input("Enter record number to delete: ")
+            input(
+                "Enter record number to delete: "
+            )
         )
 
         if 1 <= number <= len(records):
@@ -181,10 +246,7 @@ def calculate_balance():
     print(f"Current Balance: ₹{balance:.2f}")
 
 
-load_records()
-
-
-while True:
+def show_menu():
 
     print("\n===== Personal Finance Manager =====")
 
@@ -196,40 +258,59 @@ while True:
     print("6. Calculate Balance")
     print("7. Exit")
 
-    choice = input("Enter your choice: ")
 
-    if choice == "1":
+load_records()
 
-        add_income()
 
-    elif choice == "2":
+while True:
 
-        add_expense()
+    show_menu()
 
-    elif choice == "3":
+    try:
 
-        view_records()
-
-    elif choice == "4":
-
-        search_record()
-
-    elif choice == "5":
-
-        delete_record()
-
-    elif choice == "6":
-
-        calculate_balance()
-
-    elif choice == "7":
-
-        print(
-            "Thank you for using Personal Finance Manager."
+        choice = int(
+            input("Enter your choice: ")
         )
 
-        break
+        if choice == 1:
 
-    else:
+            add_income()
 
-        print("Invalid choice.")
+        elif choice == 2:
+
+            add_expense()
+
+        elif choice == 3:
+
+            view_records()
+
+        elif choice == 4:
+
+            search_record()
+
+        elif choice == 5:
+
+            delete_record()
+
+        elif choice == 6:
+
+            calculate_balance()
+
+        elif choice == 7:
+
+            print(
+                "Thank you for using "
+                "Personal Finance Manager."
+            )
+
+            break
+
+        else:
+
+            print(
+                "Please choose a number between 1 and 7."
+            )
+
+    except ValueError:
+
+        print("Please enter a valid number.")
