@@ -1,8 +1,47 @@
 # Day 30 - Personal Finance Manager
-# Commit 2 - Search, Delete and Calculate Balance
+# Commit 3 - File Handling
 
 
 records = []
+
+
+def load_records():
+
+    try:
+
+        with open("finance_records.txt", "r") as file:
+
+            for line in file:
+
+                line = line.strip()
+
+                if not line:
+                    continue
+
+                record_type, name, amount = line.split("|")
+
+                records.append({
+                    "type": record_type,
+                    "name": name,
+                    "amount": float(amount)
+                })
+
+    except FileNotFoundError:
+
+        pass
+
+
+def save_records():
+
+    with open("finance_records.txt", "w") as file:
+
+        for record in records:
+
+            file.write(
+                f"{record['type']}|"
+                f"{record['name']}|"
+                f"{record['amount']}\n"
+            )
 
 
 def add_income():
@@ -17,6 +56,8 @@ def add_income():
     }
 
     records.append(record)
+
+    save_records()
 
     print("Income added successfully.")
 
@@ -33,6 +74,8 @@ def add_expense():
     }
 
     records.append(record)
+
+    save_records()
 
     print("Expense added successfully.")
 
@@ -85,7 +128,6 @@ def delete_record():
     view_records()
 
     if not records:
-
         return
 
     try:
@@ -97,6 +139,8 @@ def delete_record():
         if 1 <= number <= len(records):
 
             removed = records.pop(number - 1)
+
+            save_records()
 
             print(
                 f"Deleted: {removed['type']} - "
@@ -135,6 +179,9 @@ def calculate_balance():
     print(f"Total Income: ₹{total_income:.2f}")
     print(f"Total Expenses: ₹{total_expense:.2f}")
     print(f"Current Balance: ₹{balance:.2f}")
+
+
+load_records()
 
 
 while True:
